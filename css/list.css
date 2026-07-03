@@ -1,0 +1,19 @@
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.list-item-body {
+  flex: 1;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 8px;
+}

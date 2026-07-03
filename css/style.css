@@ -1,0 +1,141 @@
+@import "base.css";
+@import "layout.css";
+@import "button.css";
+@import "card.css";
+@import "form.css";
+@import "list.css";
+@import "theme.css";
+
+
+
+
+/* =========================
+   全体
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+
+/* =========================
+ ヘッダー
+========================= */
+
+header {
+  background: #2d7ef7;
+  color: white;
+  padding: 20px;
+}
+
+header h1 {
+  font-size: 2rem;
+}
+
+
+/* =========================
+ メイン
+========================= */
+
+main {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 0 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+/* =========================
+ ボタン
+========================= */
+
+/* button {
+
+  padding: 18px;
+
+  font-size: 1.1rem;
+
+  border: none;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  background: white;
+
+  transition: .2s;
+}
+
+button:hover {
+
+  background: #e8eefc;
+} */
+
+.list-item {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin: 10px 0;
+
+  padding: 10px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+}
+
+:root {
+
+  --primary: #4F8EF7;
+
+  --primary-hover: #3D7BE0;
+
+  --background: #F6F7FB;
+
+  --surface: #FFFFFF;
+
+  --text: #333333;
+
+  --border: #E3E6EC;
+
+}
+
+body {
+  font-family:
+      "BIZ UDPGothic",
+      "Yu Gothic UI",
+      "Meiryo",
+      sans-serif;
+}
+
+
+.text-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.text-field:focus {
+  outline: none;
+  border-color: var(--primary);
+}

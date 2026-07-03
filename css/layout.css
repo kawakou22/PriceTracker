@@ -1,0 +1,21 @@
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
