@@ -1,41 +1,37 @@
 import { renderHome } from "./views/home.js";
 import { renderProducts } from "./views/products.js";
+import { renderProductEdit } from "./views/productEdit.js";
 import { renderStores } from "./views/stores.js";
-import { renderRegister } from "./views/register.js";
+import { renderStoreEdit } from "./views/storeEdit.js";
+import { renderPriceEdit } from "./views/priceEdit.js";
 import { renderHistory } from "./views/history.js";
 import { renderSettings } from "./views/settings.js";
 
-export async function navigate(page) {
+const routes = {
+    home: renderHome,
+    products: renderProducts,
+    productEdit: renderProductEdit,
+    stores: renderStores,
+    storeEdit: renderStoreEdit,
+    priceEdit: renderPriceEdit,
+    history: renderHistory,
+    settings: renderSettings
+};
 
-    switch (page) {
+let params = {};
 
-        case "home":
-            renderHome();
-            break;
+export async function navigate(route, nextParams = {}) {
+    const render = routes[route];
 
-        case "products":
-            await renderProducts();
-            break;
-
-        case "stores":
-            renderStores();
-            break;
-
-        case "register":
-            await renderRegister();
-            break;
-
-        case "history":
-            renderHistory();
-            break;
-
-        case "settings":
-            renderSettings();
-            break;
-
-        default:
-            renderHome();
-
+    if (!render) {
+        throw new Error(`Route "${route}" not found.`);
     }
 
+    params = nextParams;
+
+    await render(nextParams);
+}
+
+export function getParams() {
+    return params;
 }

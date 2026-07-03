@@ -1,103 +1,71 @@
 const DB_NAME = "PriceTracker";
 const DB_VERSION = 1;
 
-let db = null;
+let db;
 
-export function openDatabase() {
-    return new Promise((resolve, reject) => {
+export async function openDatabase() {
+    if (db) {
+        return;
+    }
+
+    db = await new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-        request.onerror = () => {
-            reject(request.error);
-        };
+        request.onerror = () => reject(request.error);
 
         request.onsuccess = () => {
-            db = request.result;
-            console.log("Database Open");
-            resolve();
+            resolve(request.result);
         };
 
-        request.onupgradeneeded = (event) => {
-            db = event.target.result;
-            createTables();
+        request.onupgradeneeded = event => {
+            const database = event.target.result;
+
+            createStore(database, "products");
+            createStore(database, "stores");
+            createStore(database, "prices");
         };
     });
 }
 
-function createTables() {
-    if (!db.objectStoreNames.contains("products")) {
-        db.createObjectStore("products", {
-            keyPath: "id",
-            autoIncrement: true
-        });
+function createStore(database, name) {
+    if (database.objectStoreNames.contains(name)) {
+        return;
     }
 
-    if (!db.objectStoreNames.contains("stores")) {
-        db.createObjectStore("stores", {
-            keyPath: "id",
-            autoIncrement: true
-        });
-    }
-
-    if (!db.objectStoreNames.contains("prices")) {
-        db.createObjectStore("prices", {
-            keyPath: "id",
-            autoIncrement: true
-        });
-    }
+    database.createObjectStore(name, {
+        keyPath: "id",
+        autoIncrement: true
+    });
 }
 
-export function dbAdd(storeName, data) {
+function request(storeName, mode, callback) {
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, "readwrite");
-        const store = tx.objectStore(storeName);
-        const request = store.add(data);
+        const transaction = db.transaction(storeName, mode);
+        const store = transaction.objectStore(storeName);
 
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        const req = callback(store);
+
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
     });
 }
 
 export function dbGetAll(storeName) {
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, "readonly");
-        const store = tx.objectStore(storeName);
-        const request = store.getAll();
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
+    return request(storeName, "readonly", store => store.getAll());
 }
 
-async function dbGet(storeName, id) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction(storeName, "readonly");
-        const store = transaction.objectStore(storeName);
-        const request = store.get(id);
+export function dbGet(storeName, id) {
+    return request(storeName, "readonly", store => store.get(id));
+}
 
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
+export function dbAdd(storeName, data) {
+    return request(storeName, "readwrite", store => store.add(data));
 }
 
 export function dbPut(storeName, data) {
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, "readwrite");
-        const store = tx.objectStore(storeName);
-        const request = store.put(data);
-
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-    });
+    return request(storeName, "readwrite", store => store.put(data));
 }
 
 export function dbDelete(storeName, id) {
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, "readwrite");
-        const store = tx.objectStore(storeName);
-        const request = store.delete(id);
-
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-    });
+    return request(storeName, "readwrite", store => store.delete(id));
 }

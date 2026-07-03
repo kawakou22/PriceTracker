@@ -5,7 +5,7 @@ export function createPage(title) {
   const header = document.createElement("header");
   header.className = "page-header";
 
-  const heading = document.createElement("h2");
+  const heading = document.createElement("h1");
   heading.className = "page-title";
   heading.textContent = title;
 
@@ -13,7 +13,11 @@ export function createPage(title) {
   content.className = "page-content";
 
   header.appendChild(heading);
-  page.append(header, content);
+
+  page.append(
+      header,
+      content
+  );
 
   return {
       page,

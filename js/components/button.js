@@ -11,7 +11,7 @@ export function createButton(text, onClick) {
 }
 
 export function createHomeButton() {
-    return createButton("← ホームへ戻る", async () => {
-        await navigate("home");
+    return createButton("← ホームへ戻る", () => {
+        navigate("home");
     });
 }

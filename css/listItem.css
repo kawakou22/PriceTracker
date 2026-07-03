@@ -4,13 +4,24 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
   background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .list-item-body {
   flex: 1;
+}
+
+.list-item-title {
+  font-weight: 600;
+}
+
+.list-item-subtitle {
+  margin-top: 4px;
+  color: #777;
+  font-size: .9rem;
 }
 
 .list-item-actions {

@@ -1,15 +1,18 @@
-import { navigate } from "../router.js";
-import { createButton } from "../components/button.js";
+import { createHomeButton } from "../components/button.js";
+import { createPage } from "../components/page.js";
 
 export function renderSettings() {
-
     const screen = document.querySelector("#screen");
 
-    const title = document.createElement("h2");
-    title.textContent = "設定";
+    const page = createPage("設定");
 
-    const back = createButton("← ホームへ戻る", () => navigate("home"));
+    const message = document.createElement("p");
+    message.textContent = "設定項目は今後追加予定です。";
 
-    screen.replaceChildren(title, back);
+    page.content.append(
+        message,
+        createHomeButton()
+    );
 
+    screen.replaceChildren(page.page);
 }

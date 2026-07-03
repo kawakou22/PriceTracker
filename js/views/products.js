@@ -1,96 +1,45 @@
-import { createPage } from "../components/page.js";
-import {
-    createButton,
-    createHomeButton
-} from "../components/button.js";
-import { createTextField } from "../components/textField.js";
-import { createListItem } from "../components/listItem.js";
+import { dbGetAll } from "../database.js";
+import { navigate } from "../router.js";
 
-import {
-    getProducts,
-    addProduct,
-    updateProduct,
-    deleteProduct
-} from "../services/products.js";
+import { createButton, createHomeButton } from "../components/button.js";
+import { createListItem } from "../components/listItem.js";
+import { createPage } from "../components/page.js";
 
 export async function renderProducts() {
     const screen = document.querySelector("#screen");
+
     const page = createPage("商品管理");
 
-    const list = await createProductList();
-    const form = createAddForm();
+    page.content.append(
+        createButton("＋ 商品を追加", () => {
+            navigate("productEdit");
+        })
+    );
 
-    page.content.append(list, form, createHomeButton());
+    const products = await dbGetAll("products");
 
-    screen.replaceChildren(page.page);
-
-    function createAddForm() {
-        const wrapper = document.createElement("div");
-
-        const input = createTextField("商品名");
-
-        const button = createButton("追加", async () => {
-            const name = input.value.trim();
-
-            if (name === "") {
-                return;
-            }
-
-            await addProduct(name);
-            await renderProducts();
-        });
-
-        wrapper.append(input, button);
-
-        return wrapper;
+    if (products.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "商品は登録されていません。";
+        page.content.append(empty);
     }
-}
-
-async function createProductList() {
-    const list = document.createElement("div");
-    const products = await getProducts();
 
     for (const product of products) {
-        list.appendChild(createProductItem(product));
+        const row = createListItem(
+            product.name,
+            product.maker ?? ""
+        );
+
+        const editButton = createButton("編集", () => {
+            navigate("productEdit", product);
+        });
+
+        row.actions.append(editButton);
+
+        page.content.append(row.item);
     }
 
-    return list;
-}
+    page.content.append(createHomeButton());
 
-function createProductItem(product) {
-    return createListItem(
-        product,
-        () => editProduct(product),
-        () => removeProduct(product)
-    );
-}
-
-async function editProduct(product) {
-    const name = prompt("商品名", product.name);
-
-    if (name === null) {
-        return;
-    }
-
-    const value = name.trim();
-
-    if (value === "") {
-        return;
-    }
-
-    product.name = value;
-
-    await updateProduct(product);
-
-    await renderProducts();
-}
-
-async function removeProduct(product) {
-    if (!confirm(`「${product.name}」を削除しますか？`)) {
-        return;
-    }
-
-    await deleteProduct(product.id);
-
-    await renderProducts();
+    screen.replaceChildren(page.page);
 }
